@@ -1,10 +1,10 @@
-package com.ElOuedUniv.maktaba.presentation.view
+package com.ElOuedUniv.maktaba.presentation.category
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,27 +13,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ElOuedUniv.maktaba.data.model.Book
-import com.ElOuedUniv.maktaba.presentation.viewmodel.BookViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ElOuedUniv.maktaba.data.model.Category
+import com.ElOuedUniv.maktaba.presentation.category.CategoryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookListView(
-    viewModel: BookViewModel,
-    onCategoriesClick: () -> Unit = {}
+fun CategoryListView(
+    onBackClick: () -> Unit,
+    viewModel: CategoryViewModel = hiltViewModel()
 ) {
-    val books by viewModel.books.collectAsState()
+    val categories by viewModel.categories.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Maktaba - My Library") },
-                actions = {
-                    IconButton(onClick = onCategoriesClick) {
+                title = { Text("Categories") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Categories"
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
                         )
                     }
                 },
@@ -54,13 +55,13 @@ fun BookListView(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                if (books.isEmpty()) {
-                    EmptyBooksMessage(
+                if (categories.isEmpty()) {
+                    EmptyCategoriesMessage(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
-                    BookList(
-                        books = books,
+                    CategoryList(
+                        categories = categories,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -70,8 +71,8 @@ fun BookListView(
 }
 
 @Composable
-fun BookList(
-    books: List<Book>,
+fun CategoryList(
+    categories: List<Category>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -79,14 +80,14 @@ fun BookList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(books) { book ->
-            BookItem(book = book)
+        items(categories) { category ->
+            CategoryItem(category = category)
         }
     }
 }
 
 @Composable
-fun BookItem(book: Book) {
+fun CategoryItem(category: Category) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -97,67 +98,43 @@ fun BookItem(book: Book) {
                 .padding(16.dp)
         ) {
             Text(
-                text = book.title,
+                text = category.name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-              ) {
-                Column {
-                    Text(
-                        text = "ISBN:",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = book.isbn.ifEmpty { "Not set" },
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = "Pages:",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = if (book.nbPages == 0) "Not set" else "${book.nbPages}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
+            Text(
+                text = category.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
 
 @Composable
-fun EmptyBooksMessage(modifier: Modifier = Modifier) {
+fun EmptyCategoriesMessage(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "📚",
+            text = "📂",
             style = MaterialTheme.typography.displayLarge
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "No books in your library",
+            text = "No categories available",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Complete the TODO exercises in BookRepository.kt",
+            text = "Complete the TODO exercises in TP2",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
-
