@@ -1,8 +1,9 @@
 package com.ElOuedUniv.maktaba.data.model
 
+// TODO: Complete the Category data class implementation
 data class Category(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
-    val iconRes: Int  // Drawable resource ID for the category icon
+    val iconRes: Int
 )
