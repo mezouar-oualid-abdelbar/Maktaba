@@ -18,8 +18,8 @@ object SupabaseModule {
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {
         return createSupabaseClient(
-            supabaseUrl = "https://mlheqegpteyyxwyjlryp.supabase.co",
-            supabaseKey = "sb_publishable_BRhubne5aPItwmfBurRqEQ_KAXeSw2a"
+            supabaseUrl = "https://mlheqegpteyyxwyjlryp.supabas.co",
+            supabaseKey = "key"
         ) {
             install(Postgrest)
             install(Storage)
